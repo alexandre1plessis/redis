@@ -2,7 +2,7 @@
 // Inclure l'autoloader de Predis
 require 'vendor/autoload.php';
 require 'config.php';
-require 'crud/create.php';
+require 'crud/create.php'; // Assurez-vous que c'est le bon chemin vers votre fichier create.php
 
 // Initialiser la connexion Redis
 $client = new Predis\Client($redisConfig);
@@ -15,12 +15,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Récupérer les données du formulaire
         $userName = $_POST['userName'];
         $userEmail = $_POST['userEmail'];
+        $userAddress = $_POST['userAddress']; // Récupération de l'adresse
         $userGender = $_POST['userGender'];
 
         // Ajouter un nouvel utilisateur
-        createUser($client, $userId, $userName, $userEmail, $userGender);
+        createUser($client, $pdo, $userId, $userName, $userEmail, $userAddress, $userGender);
         echo "Utilisateur ajouté avec succès. ID: $userId";
     } catch (Predis\Response\ServerException $e) {
+        echo "Erreur : " . $e->getMessage();
+    } catch (Exception $e) {
         echo "Erreur : " . $e->getMessage();
     }
 }
@@ -42,6 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label for="userEmail">Email de l'utilisateur:</label>
         <input type="email" id="userEmail" name="userEmail" required><br>
+
+        <label for="userAddress">Adresse de l'utilisateur:</label>
+        <input type="text" id="userAddress" name="userAddress" required><br> <!-- Champ pour l'adresse -->
 
         <label for="userGender">Genre:</label>
         <select id="userGender" name="userGender">

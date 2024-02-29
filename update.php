@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['userId'])) {
     $userIdToUpdate = $_POST['userId'];
     try {
         // Lire les données de l'utilisateur à mettre à jour
-        $userDataToUpdate = readUser($client, $userIdToUpdate);
+        $userDataToUpdate = readUser($client, $pdo, $userIdToUpdate);
     } catch (Predis\Response\ServerException $e) {
         echo "Erreur : " . $e->getMessage();
     }
@@ -37,16 +37,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['userId'])) {
     <h1>Mettre à jour l'utilisateur</h1>
     <?php if (isset($userDataToUpdate)) : ?>
     <form method="post" action="RequestHandler.php">
-        <input type="hidden" name="userId" value="<?php echo $userDataToUpdate['id']; ?>">
+        <input type="hidden" name="userId" value="<?php echo htmlspecialchars($userDataToUpdate['id']); ?>">
         
         <label for="updatedName">Nom de l'utilisateur:</label>
-        <input type="text" id="updatedName" name="updatedName" value="<?php echo $userDataToUpdate['name']; ?>" required><br>
+        <input type="text" id="updatedName" name="updatedName" value="<?php echo htmlspecialchars($userDataToUpdate['name']); ?>" required><br>
         
         <label for="updatedEmail">Email de l'utilisateur:</label>
-        <input type="email" id="updatedEmail" name="updatedEmail" value="<?php echo $userDataToUpdate['email']; ?>" required><br>
+        <input type="email" id="updatedEmail" name="updatedEmail" value="<?php echo htmlspecialchars($userDataToUpdate['email']); ?>" required><br>
+
+        <label for="updatedAddress">Adresse de l'utilisateur:</label>
+        <input type="text" id="updatedAddress" name="updatedAddress" value="<?php echo htmlspecialchars($userDataToUpdate['address']); ?>" required><br>
 
         <label for="updatedGender">Genre actuel:</label>
-        <span><?php echo $userDataToUpdate['gender']; ?></span><br>
+        <span><?php echo htmlspecialchars($userDataToUpdate['gender']); ?></span><br>
 
         <label for="updatedGender">Modifier le genre:</label>
         <select id="updatedGender" name="updatedGender">
