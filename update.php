@@ -32,6 +32,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['userId'])) {
 <head>
     <title>Mettre à jour l'utilisateur</title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#updatedAddress').on('input', function() {
+                var address = $(this).val();
+                if (address.length > 3) {
+                    $.ajax({
+                        url: 'https://api-adresse.data.gouv.fr/search/?q=' + encodeURIComponent(address),
+                        type: 'GET',
+                        success: function(data) {
+                            $('#addressSuggestions').empty();
+                            data.features.forEach(function(feature) {
+                                $('#addressSuggestions').append('<option value="' + feature.properties.label + '">');
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <h1>Mettre à jour l'utilisateur</h1>
@@ -46,7 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['userId'])) {
         <input type="email" id="updatedEmail" name="updatedEmail" value="<?php echo htmlspecialchars($userDataToUpdate['email']); ?>" required><br>
 
         <label for="updatedAddress">Adresse de l'utilisateur:</label>
-        <input type="text" id="updatedAddress" name="updatedAddress" value="<?php echo htmlspecialchars($userDataToUpdate['address']); ?>" required><br>
+        <input type="text" id="updatedAddress" name="updatedAddress" list="addressSuggestions" value="<?php echo htmlspecialchars($userDataToUpdate['address']); ?>" required><br>
+        <datalist id="addressSuggestions"></datalist>
 
         <label for="updatedGender">Genre actuel:</label>
         <span><?php echo htmlspecialchars($userDataToUpdate['gender']); ?></span><br>

@@ -35,6 +35,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <title>Ajouter un utilisateur</title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#userAddress').on('input', function() {
+                var address = $(this).val();
+                if (address.length > 3) { // Pour éviter des requêtes trop fréquentes
+                    $.ajax({
+                        url: 'https://api-adresse.data.gouv.fr/search/?q=' + encodeURIComponent(address),
+                        type: 'GET',
+                        success: function(data) {
+                            $('#addressSuggestions').empty();
+                            data.features.forEach(function(feature) {
+                                $('#addressSuggestions').append('<option value="' + feature.properties.label + '">');
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <h1>Ajouter un utilisateur</h1>
@@ -47,7 +67,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="email" id="userEmail" name="userEmail" required><br>
 
         <label for="userAddress">Adresse de l'utilisateur:</label>
-        <input type="text" id="userAddress" name="userAddress" required><br> <!-- Champ pour l'adresse -->
+        <input type="text" id="userAddress" name="userAddress" list="addressSuggestions" required><br> <!-- Champ pour l'adresse avec suggestions -->
+        <datalist id="addressSuggestions"></datalist>
 
         <label for="userGender">Genre:</label>
         <select id="userGender" name="userGender">
