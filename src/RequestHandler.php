@@ -1,6 +1,6 @@
 <?php
 // Inclure l'autoloader de Predis et d'autres dépendances
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 require 'config.php';
 require 'crud/create.php';
 require 'crud/read.php';

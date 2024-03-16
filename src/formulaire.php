@@ -1,6 +1,6 @@
 <?php
 // Inclure l'autoloader de Predis
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 require 'config.php';
 require 'crud/create.php'; // Assurez-vous que c'est le bon chemin vers votre fichier create.php
 

@@ -1,0 +1,16 @@
+<phpunit bootstrap="vendor/autoload.php">
+    <testsuites>
+        <testsuite name="default">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>src</directory>
+        </whitelist>
+    </filter>
+    <extensions>
+        <extension class="Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration" />
+    </extensions>
+</phpunit>

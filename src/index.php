@@ -3,7 +3,7 @@
 session_start();
 
 // Inclure l'autoloader de Predis et la configuration
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 require 'config.php';
 require 'crud/read.php';
 

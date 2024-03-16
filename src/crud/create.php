@@ -36,11 +36,12 @@ try {
                     'address' => $userAddress,
                     'gender' => $userGender
                 ]);
+                return "Utilisateur créé avec succès.";
             } else {
-                echo "Email déjà utilisé.\n";
+                return "L'email est déjà utilisé.";
             }
         } else {
-            echo "Utilisateur déjà en cache.\n";
+            return "L'utilisateur existe déjà dans le cache.";
         }
     }
     
