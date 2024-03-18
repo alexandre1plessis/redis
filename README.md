@@ -14,8 +14,14 @@
 
 3. Diagrammes
 </br>
-
+UseCase
 ![image](https://github.com/alexandre1plessis/redis/assets/94174332/7390c9ff-3483-4c19-8a49-10f46f978464)
 
+</br>
+
+Diagramme d'activité
+</br>
+
+![image](https://github.com/alexandre1plessis/redis/assets/94174332/9dd47268-da80-441e-8144-4517a410544e)
 
 
