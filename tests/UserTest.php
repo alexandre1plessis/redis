@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use Predis\Client as PredisClient;
 require 'src/crud/create.php';
+require 'src/crud/update.php';
 
 class UserTest extends TestCase
 {
@@ -111,4 +112,62 @@ class UserTest extends TestCase
         $result = createUser($this->client, $this->pdo, $userId, $userName, $userEmail, $userAddress, $userGender);
         $this->assertEquals("L'utilisateur existe déjà dans le cache.", $result);
     }
+
+    public function testUpdateUserSuccess()
+    {
+        $userId = 'existingUserId';
+        $newName = 'Updated Name';
+        $newEmail = 'updated@example.com';
+        $newAddress = 'Updated Address';
+        $newGender = 'Femme';
+
+        // Simuler que l'utilisateur existe dans le cache Redis
+        $this->mockRedisExists($userId, true);
+
+        // Simuler la réponse de la mise à jour dans Redis
+        $this->client->shouldReceive('hMset')->andReturn(true);
+
+        // Simuler la réponse de la mise à jour dans MySQL
+        $stmt = Mockery::mock(PDOStatement::class);
+        $stmt->shouldReceive('execute')->andReturn(true);
+        $this->pdo->shouldReceive('prepare')->andReturn($stmt);
+
+        // Effectuer la mise à jour
+        updateUser($this->client, $this->pdo, $userId, $newName, $newEmail, $newAddress, $newGender);
+
+        // Récupérer les données mises à jour pour vérifier si la mise à jour a réussi
+        $updatedUser = readUser($this->client, $userId);
+
+        // Assertions pour vérifier si les données de l'utilisateur ont été correctement mises à jour
+        $this->assertEquals($newName, $updatedUser['name']);
+        $this->assertEquals($newEmail, $updatedUser['email']);
+        $this->assertEquals($newAddress, $updatedUser['address']);
+        $this->assertEquals($newGender, $updatedUser['gender']);
+    }
+
+    public function testUpdateUserNotInCache()
+    {
+        $userId = 'nonExistingUserId';
+        $newName = 'New Name';
+        $newEmail = 'new@example.com';
+        $newAddress = 'New Address';
+        $newGender = 'Non-Binaire';
+
+        // Simuler que l'utilisateur n'existe pas dans le cache Redis
+        $this->mockRedisExists($userId, false);
+
+        // Simuler la réponse de la mise à jour dans MySQL
+        $stmt = Mockery::mock(PDOStatement::class);
+        $stmt->shouldReceive('execute')->andReturn(true);
+        $this->pdo->shouldReceive('prepare')->andReturn($stmt);
+
+        // Tester l'exception pour s'assurer qu'une Exception est lancée si l'utilisateur n'est pas dans le cache
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("L'utilisateur avec l'ID $userId n'existe pas dans Redis.");
+
+        // Tenter de mettre à jour l'utilisateur
+        updateUser($this->client, $this->pdo, $userId, $newName, $newEmail, $newAddress, $newGender);
+    }
+
+
 }

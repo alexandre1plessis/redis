@@ -61,5 +61,9 @@ try {
         <input type="submit" name="deleteAll" value="Supprimer tous les utilisateurs">
     </form>
     <a href="formulaire.php">Ajouter des utilisateurs</a>
+    <form method="post" action="downloadEmails.php">
+        <input type="submit" name="downloadEmails" value="Télécharger les Emails CSV">
+    </form>
+
 </body>
 </html>
