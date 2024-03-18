@@ -13,5 +13,7 @@
    Système de sauvegarde de données sur Redis et MySQL
 
 4. Diagrammes
+![image](https://github.com/alexandre1plessis/redis/assets/94174332/7390c9ff-3483-4c19-8a49-10f46f978464)
+
 
 5. 
