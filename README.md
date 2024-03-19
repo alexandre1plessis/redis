@@ -6,6 +6,8 @@
 
 Pour lancer le projet : Sur wamp l'ajouter dans les virtualHost, le voir sur redis/src
 </br>
+Il est possible qu'il soit nécessaire de faire un composer -update dans \wamp\www\redis\redis, vérifier d'abord si le projet fonctionne déjà, ne pas faire si c'est le cas
+</br>
 Lancer les tests : dans \wamp\www\redis\redis, lancer la commande : ./vendor/bin/phpunit
 
 3. Description Fonctionnelle
