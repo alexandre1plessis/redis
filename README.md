@@ -41,5 +41,51 @@ Diagramme
 
 ![image](https://github.com/alexandre1plessis/redis/assets/94174332/a64bd513-11e8-4b85-8d61-ccc9273266ee)
 
+</br>
 
+Choix pour l'architecture : une architecture simple en CRUD pour faciliter l'organisation des différentes méthodes utilisées selon les besoins, choisie aussi car c'est une architecture basique simple à mettre en place et que j'ai déjà pratiqué plusieurs fois.
+</br>
+</br>
+
+Estimation des coûts réels de l'application sur AWS
+</br>
+
+Services AWS Principaux:</br>
+Amazon EC2:</br>
+</br>
+    Type d'instance: t3.micro (2 vCPU, 1 GiB de mémoire).
+    Coût approximatif: Environ 0,0116 €/heure.
+
+Amazon RDS pour MySQL:</br>
+</br>
+    Type d'instance: db.t3.micro avec 20 GB de stockage SSD général.
+    Coût approximatif: Environ 0,019 €/heure pour l'instance + 0,128 €/GB-mois pour le stockage SSD.
+
+Amazon ElastiCache pour Redis:</br>
+</br>
+    Type d'instance: cache.t3.micro.
+    Coût approximatif: Environ 0,019 €/heure.
+
+Estimation des Coûts Mensuels:</br>
+EC2:</br>
+</br>
+    Total mensuel approximatif: 0,0116 € * 24 heures * 30 jours ≈ 8,35 €.
+
+RDS pour MySQL:</br>
+</br>
+    Total mensuel approximatif: (0,019 € * 24 * 30) pour l'instance + (20 * 0,128) pour le stockage ≈ 13,70 € + 2,56 € = 16,26 €.
+
+ElastiCache pour Redis:</br>
+</br>
+    Total mensuel approximatif: 0,019 € * 24 heures * 30 jours ≈ 13,70 €.
+
+Coût Total Estimatif:</br>
+</br>
+    Coût mensuel total approximatif: 8,35 € (EC2) + 16,26 € (RDS) + 13,70 € (ElastiCache) = 38,31 €.
+
+Notes Importantes:</br>
+</br>
+    Les prix spécifiques à la région de Paris (eu-west-3) sont utilisés ici comme exemple. Les prix varient entre les régions.
+    Ces estimations ne comprennent pas la bande passante sortante, les opérations supplémentaires, ni d'autres services potentiels.
+    AWS propose un niveau gratuit pour les nouveaux clients qui peut réduire ou éliminer certains coûts pendant les 12 premiers mois.
 
