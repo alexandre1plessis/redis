@@ -22,13 +22,24 @@ Lancer les tests : dans \wamp\www\redis\redis, lancer la commande : ./vendor/bin
 UseCase
 </br>
 
-![image](https://github.com/alexandre1plessis/redis/assets/94174332/7390c9ff-3483-4c19-8a49-10f46f978464)
+![image](https://github.com/alexandre1plessis/redis/assets/94174332/b8970d0a-342a-481d-b74b-feb6222c65e3)
+
 
 </br>
 
 Diagramme d'activité
 </br>
 
-![image](https://github.com/alexandre1plessis/redis/assets/94174332/9dd47268-da80-441e-8144-4517a410544e)
+![image](https://github.com/alexandre1plessis/redis/assets/94174332/1f7adbb8-5e08-4471-912b-018b36f8a50d)
+
+
+</br>
+
+Diagramme
+
+</br>
+
+![image](https://github.com/alexandre1plessis/redis/assets/94174332/a64bd513-11e8-4b85-8d61-ccc9273266ee)
+
 
 
