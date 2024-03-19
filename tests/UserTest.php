@@ -2,8 +2,11 @@
 
 use PHPUnit\Framework\TestCase;
 use Predis\Client as PredisClient;
+require __DIR__ . '/../vendor/autoload.php'; // Ajustez le chemin selon la structure de votre projet
 require 'src/crud/create.php';
 require 'src/crud/update.php';
+require 'src/crud/read.php';
+require 'src/crud/delete.php';
 
 class UserTest extends TestCase
 {
@@ -14,10 +17,25 @@ class UserTest extends TestCase
     {
         // Mockery pour simuler l'objet Predis\Client
         $this->client = Mockery::mock(PredisClient::class)->makePartial();
-        // Autoriser le mocking des méthodes protégées (et donc des méthodes magiques)
         $this->client->shouldAllowMockingProtectedMethods();
-        // Configurer le mock pour hmset
+
+        // Configurer le mock pour hMset et exists
         $this->client->shouldReceive('hmset')->andReturn(true);
+        $this->client->shouldReceive('exists')->andReturnUsing(function ($key) {
+            // Simuler l'existence ou non d'une clé
+            return strpos($key, 'existingUserId') !== false;
+        });
+
+        // Ajoutez ici le mock pour hGetAll
+        $this->client->shouldReceive('hGetAll')
+            ->andReturnUsing(function ($key) {
+                // Retourner des données mockées basées sur la clé
+                if (strpos($key, 'existingUserId') !== false) {
+                    return ['name' => 'Updated Name', 'email' => 'updated@example.com', 'address' => 'Updated Address', 'gender' => 'Femme'];
+                }
+                return []; // Aucune donnée pour les clés non existantes
+            });
+
         // Mockery pour simuler l'objet PDO
         $this->pdo = Mockery::mock('PDO');
     }
@@ -121,6 +139,11 @@ class UserTest extends TestCase
         $newAddress = 'Updated Address';
         $newGender = 'Femme';
 
+        // Configurer le mock pour hGetAll spécifiquement pour ce test
+        $this->client->shouldReceive('hGetAll')
+            ->with("user:$userId")
+            ->andReturn(['name' => $newName, 'email' => 'updated@example.com', 'address' => 'Updated Address', 'gender' => 'Femme']);
+
         // Simuler que l'utilisateur existe dans le cache Redis
         $this->mockRedisExists($userId, true);
 
@@ -136,7 +159,7 @@ class UserTest extends TestCase
         updateUser($this->client, $this->pdo, $userId, $newName, $newEmail, $newAddress, $newGender);
 
         // Récupérer les données mises à jour pour vérifier si la mise à jour a réussi
-        $updatedUser = readUser($this->client, $userId);
+        $updatedUser = readUser($this->client, $this->pdo, $userId);
 
         // Assertions pour vérifier si les données de l'utilisateur ont été correctement mises à jour
         $this->assertEquals($newName, $updatedUser['name']);
@@ -168,6 +191,69 @@ class UserTest extends TestCase
         // Tenter de mettre à jour l'utilisateur
         updateUser($this->client, $this->pdo, $userId, $newName, $newEmail, $newAddress, $newGender);
     }
+
+    public function testDeleteUserSuccess()
+    {
+        $userId = 'existingUserId';
+
+        // Configurez les mocks pour simuler la suppression dans Redis et MySQL
+        $this->client->shouldReceive('del')
+            ->once()
+            ->with("user:$userId")
+            ->andReturn(1)
+            ->getMock(); // Ajoutez getMock() pour permettre l'utilisation de andReturn()
+
+        $stmt = Mockery::mock(PDOStatement::class);
+        $stmt->shouldReceive('execute')
+            ->once()
+            ->with(['id' => $userId])
+            ->andReturn(true);
+        $this->pdo->shouldReceive('prepare')
+            ->once()
+            ->with("DELETE FROM users WHERE id = :id")
+            ->andReturn($stmt);
+
+        // Effectuez la suppression
+        deleteUser($this->client, $this->pdo, $userId);
+
+        // Vérifiez que les comportements attendus des mocks ont bien été réalisés
+        $this->client->shouldHaveReceived('del');
+        $this->pdo->shouldHaveReceived('prepare');
+        $stmt->shouldHaveReceived('execute');
+    }
+
+
+    public function testDeleteUserNotInRedis()
+    {
+        $userId = 'nonExistingUserId';
+    
+        // Configurez le mock pour simuler la tentative de suppression d'un utilisateur non existant dans Redis
+        $this->client->shouldReceive('del')
+            ->once()
+            ->with("user:$userId")
+            ->andReturn(0)
+            ->getMock(); // Ajoutez getMock() pour permettre l'utilisation de andReturn()
+    
+        $stmt = Mockery::mock(PDOStatement::class);
+        $stmt->shouldReceive('execute')
+            ->once()
+            ->with(['id' => $userId])
+            ->andReturn(true);
+        $this->pdo->shouldReceive('prepare')
+            ->once()
+            ->with("DELETE FROM users WHERE id = :id")
+            ->andReturn($stmt);
+    
+        // Effectuez la suppression
+        deleteUser($this->client, $this->pdo, $userId);
+    
+        // Vérifiez que les comportements attendus des mocks ont bien été réalisés
+        $this->client->shouldHaveReceived('del');
+        $this->pdo->shouldHaveReceived('prepare');
+        $stmt->shouldHaveReceived('execute');
+    }
+
+
 
 
 }

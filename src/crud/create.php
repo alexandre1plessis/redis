@@ -1,6 +1,6 @@
 <?php
+require __DIR__ . '/../config.php'; // Ajustez le chemin selon la structure de votre projet
 
-include 'config.php'; // Assurez-vous que c'est le bon chemin vers votre fichier config
 
 try {
     // Créer un nouveau client Predis

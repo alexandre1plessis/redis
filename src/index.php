@@ -57,10 +57,8 @@ try {
         <p>Aucun utilisateur n'a été ajouté.</p>
     <?php endif; ?>
 
-    <form method="post" action="RequestHandler.php">
-        <input type="submit" name="deleteAll" value="Supprimer tous les utilisateurs">
-    </form>
     <a href="formulaire.php">Ajouter des utilisateurs</a>
+    
     <form method="post" action="downloadEmails.php">
         <input type="submit" name="downloadEmails" value="Télécharger les Emails CSV">
     </form>

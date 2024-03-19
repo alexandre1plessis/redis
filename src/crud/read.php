@@ -1,6 +1,6 @@
 <?php
-require '../vendor/autoload.php';
-require 'config.php';
+require __DIR__ . '/../config.php'; // Ajustez le chemin selon la structure de votre projet
+
 
 try {
     // Créer un nouveau client Predis
